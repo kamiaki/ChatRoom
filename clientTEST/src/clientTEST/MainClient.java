@@ -4,10 +4,13 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
@@ -19,6 +22,9 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin;
+
 public class MainClient {
 
 	private JFrame frame;
@@ -27,7 +33,6 @@ public class MainClient {
 	private JTextField textField_send;
 	private JScrollPane scrollPane;
 	private JTextArea textArea;
-	private buttonlistener btl;
 	private JLabel Label_NameZT;
 	private JLabel Label_IpPort;
 	
@@ -39,19 +44,24 @@ public class MainClient {
 	private JMenu mnNewMenu_1;
 	private JMenuItem MenuItem_ipport;
 	
-	private Client client;
+	private buttonlistener btl;
+	private keyListener keyl;
 	
+	private Client client;
 	String ip;
 	String Port;
 	String name;
 	String Login = "离线";
 	/**
-	 * Launch the application.
+	 * 主函数
 	 */
 	public static void main(String[] args) {
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		JDialog.setDefaultLookAndFeelDecorated(true);
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					SubstanceLookAndFeel.setSkin(new BusinessBlueSteelSkin());  
 					MainClient window = new MainClient();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -62,17 +72,18 @@ public class MainClient {
 	}
 
 	/**
-	 * Create the application.
+	 * 构造函数
 	 */
 	public MainClient() {
 		initialize();
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * 初始化函数
 	 */
 	private void initialize() {
 		btl = new buttonlistener();
+		keyl = new keyListener();
 		//*********************************************窗口
 		frame = new JFrame();
 		frame.setBounds(100, 100, 333, 283);
@@ -108,11 +119,13 @@ public class MainClient {
 		
 		textField_send = new JTextField();
 		textField_send.setBounds(119, 168, 185, 30);
+		textField_send.addKeyListener(keyl);
 		textField_send.setEnabled(false);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(28, 50, 276, 95);
 		textArea = new JTextArea();
+		textArea.setEnabled(false);
 		scrollPane.setViewportView(textArea);
 		
 		menuBar = new JMenuBar();
@@ -152,6 +165,11 @@ public class MainClient {
 		updata();
 	}
 	
+	/**
+	 * 监听按钮事件
+	 * @author Administrator
+	 *
+	 */
 	public class buttonlistener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -192,9 +210,10 @@ public class MainClient {
 
 				break;
 			case "发送":		
-				if(!client.Write(name + "说:" + textField_send.getText())){
+				if(!client.Write(textField_send.getText())){
 					textArea.setText("服务器异常，请重新登录！");
 				}
+				textField_send.setText("");
 				updata();
 				break;
 			case "设置昵称":
@@ -227,7 +246,33 @@ public class MainClient {
 		}
 	}
 	
-	public void updata(){
+	/**
+	 * 键盘监听
+	 */
+	public class keyListener implements KeyListener{
+		public void keyPressed(KeyEvent  e)
+		{   
+			if(e.getSource() == textField_send)
+			{
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) //判断按下的键是否是回车键
+				{  
+					if(!client.Write(textField_send.getText())){
+						textArea.setText("服务器异常，请重新登录！");
+					}
+					textField_send.setText("");
+					updata();
+				}
+			}  
+		} 
+		public void keyReleased(KeyEvent e){  
+		}
+		public void keyTyped(KeyEvent  e){  
+		}
+	}
+	/**
+	 * 更新数据
+	 */
+	public void updata(){   
 		ip = FileRelevant.filepathread("ServerIp.txt");
 		Port = FileRelevant.filepathread("ServerPort.txt");
 		name = FileRelevant.filepathread("ClientName.txt");

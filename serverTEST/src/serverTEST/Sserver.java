@@ -22,11 +22,11 @@ public class Sserver {
 		this.PORT = port;
 	}
 	
-	public void SetstartPD(boolean pd){
-		this.startPD = pd;
-	}
-	
+	/**
+	 * 断开监听
+	 */
 	public void cut(){
+		this.startPD = false;
 		try {
 			if (ServerS != null) {
 				ServerS.close();
@@ -37,25 +37,21 @@ public class Sserver {
 		}
 	}
 	
+	/**
+	 * 开始监听
+	 */
 	public void strat(){
+		this.startPD = true;
 		if(startPD){		
 			try {
 				ServerS = new ServerSocket(PORT);								//服务端启动
 				while(startPD){													//循环连接
 					Socket s = ServerS.accept();								//阻塞连接一个客户端
-					//***************************************读取名字
-					InputStream in = s.getInputStream();
-					byte[] JSwzbyte = new byte[1000];               
-	                int length = in.read(JSwzbyte);
-	                name = new String(JSwzbyte, 0, length);
-	                int FHwz = name.indexOf("#");
-	                name = name.substring(FHwz+1);
-	                
-	                Sclient nc = new Sclient(s, MS, LinkNumber,name,clients);
-					nc.setNameTOall(name);										//获取客户端名
-					LinkNumber++;												//连接数 +1
+	                name = GetName(s);											//读取名字
+	                Sclient nc = new Sclient(s, MS, LinkNumber,name,clients);	
 					new Thread(nc).start();										//启动客户端线程
-					clients.add(nc);											//在链表中添加 客户端项目
+					clients.add(nc);											//在链表中添加 客户端项目				
+					LinkNumber++;												//连接数 +1
 				}
 			} catch (Exception e) {
 				MS.textArea.setText("连接中断！");
@@ -76,4 +72,30 @@ public class Sserver {
 			}
 		}//if startPD
 	}//void start
+	
+	/**
+	 * 获取名字
+	 */
+	public String GetName(Socket socket){
+		String readname = "";
+		InputStream in = null;
+		byte[] JSwzbyte = null;
+		int length = 0;
+		int FHwz = 0;
+		
+		try {
+			
+			in = socket.getInputStream();
+			JSwzbyte = new byte[1000];               
+	        length = in.read(JSwzbyte);
+	        readname = new String(JSwzbyte, 0, length);
+	        FHwz = readname.indexOf("#");
+	        readname = readname.substring(FHwz+1);
+	        
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return readname;
+	}
 }

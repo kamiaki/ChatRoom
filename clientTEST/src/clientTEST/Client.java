@@ -32,8 +32,8 @@ public class Client {
 	 */
 	public boolean Link() {
 		try {
-			ClientSocket = new Socket(IP, PORT);
 			PDLink = true;
+			ClientSocket = new Socket(IP, PORT);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -62,8 +62,8 @@ public class Client {
 	 */
 	public boolean Write(String str) {
 		try {
+            byte[] FSwzbyte = str.getBytes();
 			OutputStream out = ClientSocket.getOutputStream();
-              byte[] FSwzbyte = str.getBytes();
 			out.write(FSwzbyte);
 			return true;
 		} catch (Exception e) {
@@ -91,7 +91,8 @@ public class Client {
 		                	 text.append(JSWz); 
 		                 }else{
 		                	 text.append("\r\n" + JSWz); 
-		                 }  	                                   
+		                 }  
+		                 text.setCaretPosition(text.getDocument().getLength());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

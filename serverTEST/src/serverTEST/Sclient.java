@@ -16,9 +16,13 @@ public class Sclient implements Runnable{
 	String name = null;				//客户端名字
 	int i = 0;						//第几个游客			
 	InputStream  is = null;			//输入流
-    OutputStream os = null;  		//输出流    
-    
+    OutputStream os = null;  		//输出流     
     List<Sclient> clients;			//客户端链表
+    
+	String message = "";			//初始化时发送的数据
+	String names = "";				//初始化时告诉都有谁在线
+	String ReadStr;					//接收到的信息
+	String SendStr;					//返回的信息
     /**
      * 构造函数
      * @param s 加入客户端连接
@@ -31,53 +35,79 @@ public class Sclient implements Runnable{
 		this.i =i;
 		this.name = NAME;
 		this.clients = CLIENTS;
-		Cconnect = true;
+		this.Cconnect = true;	
 		
-		try {
+		se.textArea.append("\r\n客户端"+name+"进入");					//通知服务端
+	
+		try {														//通知其他客户端
 			os = s.getOutputStream();
-			is = s.getInputStream();
+			is = s.getInputStream();						
 			
+			message = "房间现有" + clients.size() + "个人  " + " 你是第" + i + "个来的";	
+			os.write(message.getBytes());							//告诉他你是第几号                		
+			try {													//等待半秒
+				Thread.sleep(500);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 			
-			
-			String fanhui = "房间内有" + clients.size() + "个人";	
-			os.write(fanhui.getBytes());							//告诉他你是第几号                
-			
-			se.textArea.append("\r\n客户端"+name+"进入");			
+			for(int nameID = 0; nameID < clients.size(); nameID++){
+				names = clients.get(nameID).getName();
+				message = names + "—在线";
+				os.write(message.getBytes());		
+			}	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		setNameTOall();
 	}	
+	
+	/**
+	 * 多线程接受信息
+	 */
 	@Override
 	public void run() {	
 		try {
 			while(Cconnect){
-				String str;			
 				byte[] JSwzbyte = new byte[1024];
                 int length = 0;           
-                length = is.read(JSwzbyte);				//接受信息
-                str = new String(JSwzbyte,0,length);                
-                String pd = str.substring(0,3);
-                
-                if(pd.equals("登出#")){                       //如果接受信息为-1 代表已经离开了
-                	clients.remove(this);
+                length = is.read(JSwzbyte);				
+                ReadStr = new String(JSwzbyte,0,length);   		//接受信息             
+               
+                String pd = ReadStr.substring(0,3);   
+               
+                switch (pd) {									//根据用户发过来的消息判断操作
+				case "登出#":
+					clients.remove(this);
                 	this.Cconnect = false;
                 	this.s.close(); 
-                	str = this.getName() + "离开了！";
-                }
-                
-				se.textArea.append("\r\n" + str);
-				for(int k = 0;k<clients.size();k++){
-					Sclient nc = clients.get(k);
-					nc.send(str);
-				}
+                	SendStr = this.getName() + "离开了！";     	
+                	se.textArea.append("\r\n" + SendStr);
+    				for(int k = 0;k<clients.size();k++){
+    					Sclient nc = clients.get(k);
+    					nc.send(SendStr);
+    				}
+					break;
+				default:
+					SendStr = name + "说:" + ReadStr;
+		           	se.textArea.append("\r\n" + SendStr);
+    				for(int k = 0;k<clients.size();k++){
+    					Sclient nc = clients.get(k);
+    					nc.send(SendStr);
+    				}
+					break;
+				}			
 			}
-		} catch (EOFException e) {
-			// TODO: handle exception
-			se.textArea.append("\r\n用户"+ i +"离开");
+		} catch (Exception e) {									//异常中断处理
 			clients.remove(this);
-			this.Cconnect = false;		
-		}catch (Exception e){
-			e.printStackTrace();
+			this.Cconnect = false;	
+			SendStr = this.getName() + "异常中断！";     	
+        	se.textArea.append("\r\n" + SendStr);
+			for(int k = 0;k<clients.size();k++){
+				Sclient nc = clients.get(k);
+				nc.send(SendStr);
+			}
 		}finally{
 			try {
 				if(is != null) is.close();
@@ -101,15 +131,24 @@ public class Sclient implements Runnable{
 			e.printStackTrace();
 		}
 	}	
+	
+	/**
+	 * 获取客户端名字
+	 * @return
+	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	public void setNameTOall(String name) {
-		this.name = name;
-		String str = "客户端" + this.getName()  + "进入房间";
+
+	/**
+	 * 告诉所有人你来了
+	 * @param name
+	 */
+	public void setNameTOall() {
+		message = this.getName()  + " 进入房间";
 		for(Iterator<Sclient> it = clients.iterator();it.hasNext();){
 			Sclient nc = it.next();
-			nc.send(str);												//客户端显示客户端数据
+			nc.send(message);												//客户端显示客户端数据
 		}
 	}
 }
