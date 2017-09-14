@@ -90,8 +90,8 @@ public class MainClient {
 		//*********************************************窗口
 		frame = new JFrame("聊起来！" + "    By:Aki");
 		
-//		ImageIcon ICOa = new ImageIcon("ico.png");   						//窗体图标
-		ImageIcon ICOa = new ImageIcon(getClass().getResource("/ico.png"));   
+		ImageIcon ICOa = new ImageIcon("ico.png");   						//窗体图标
+//		ImageIcon ICOa = new ImageIcon(getClass().getResource("/ico.png"));   
 		Image Imagea = ICOa.getImage();	
 		frame.setIconImage(Imagea);
 		
@@ -185,12 +185,11 @@ public class MainClient {
 			switch (e.getActionCommand()) {
 			case "登录":
 				if(MenuItem_login.getText().equals("登录")){					
-					client = new Client(ip, Integer.parseInt(Port));
+					client = new Client(ip, Integer.parseInt(Port),textArea);
 					if(client.Link()){
 						if(!client.Write("登录#" + name)){
 							textArea.setText("服务器异常，请重新登录！");
 						}
-						client.read(textArea);
 						MenuItem_login.setText("登出");
 						textField_send.setEnabled(true);
 						Button_send.setEnabled(true);
@@ -219,10 +218,15 @@ public class MainClient {
 
 				break;
 			case "发送":		
-				if(!client.Write(textField_send.getText())){
-					textArea.setText("服务器异常，请重新登录！");
-				}
+				String wz = textField_send.getText();
 				textField_send.setText("");
+				if(wz.trim().equals("") || wz == null){
+					textArea.append("\r\n你什么都没说啊~");
+				}else{
+					if(!client.Write(wz)){
+						textArea.setText("服务器异常，请重新登录！");
+					}
+				}	
 				updata();
 				break;
 			case "设置昵称":
@@ -265,10 +269,15 @@ public class MainClient {
 			{
 				if(e.getKeyCode() == KeyEvent.VK_ENTER) //判断按下的键是否是回车键
 				{  
-					if(!client.Write(textField_send.getText())){
-						textArea.setText("服务器异常，请重新登录！");
-					}
+					String wz = textField_send.getText();
 					textField_send.setText("");
+					if(wz.trim().equals("") || wz == null){
+						textArea.append("\r\n你什么都没说啊~");
+					}else{
+						if(!client.Write(wz)){
+							textArea.setText("服务器异常，请重新登录！");
+						}
+					}	
 					updata();
 				}
 			}  

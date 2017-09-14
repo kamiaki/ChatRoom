@@ -1,7 +1,10 @@
 package clientTEST;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.Socket;
 
 import javax.swing.JTextArea;
@@ -16,15 +19,16 @@ public class Client {
 	String IP = "";
 	int PORT = 0;
 	boolean PDLink = false;
-    
+    JTextArea TextArea;
     /**
      * 构造函数
      * @param ip
      * @param port
      */
-	public Client(String ip,int port) {
+	public Client(String ip,int port,JTextArea textArea) {
 		this.IP = ip;
 		this.PORT = port;
+		this.TextArea = textArea;
 	}
 	
 	/**
@@ -34,6 +38,7 @@ public class Client {
 		try {
 			PDLink = true;
 			ClientSocket = new Socket(IP, PORT);
+			readMessage();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,10 +66,15 @@ public class Client {
 	 * @param str
 	 */
 	public boolean Write(String str) {
-		try {
-            byte[] FSwzbyte = str.getBytes();
-			OutputStream out = ClientSocket.getOutputStream();
-			out.write(FSwzbyte);
+		try {      
+//			byte[] FSwzbyte = str.getBytes();
+//			OutputStream out = ClientSocket.getOutputStream();
+//			out.write(FSwzbyte);
+			
+			PrintStream ps = new PrintStream(ClientSocket.getOutputStream());
+			ps.println(str);
+			ps.flush();
+			
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -76,23 +86,29 @@ public class Client {
 	 * 接收信息
 	 * @param text
 	 */
-	public void read(JTextArea text) {
+	public void readMessage() {
 		new Thread(new Runnable() {		
 			public void run() {
-			    String JSWz = "";
-				try {
-					InputStream in = ClientSocket.getInputStream();
-					while (PDLink) {			
-						 byte[] JSwzbyte = new byte[1000];
-		                 int length = 0;                
-		                 length = in.read(JSwzbyte);//1，接受信息的长度
-		                 JSWz = new String(JSwzbyte, 0, length);
-		                 if(text.getText().trim().equals("")){
-		                	 text.append(JSWz); 
-		                 }else{
-		                	 text.append("\r\n" + JSWz); 
-		                 }  
-		                 text.setCaretPosition(text.getDocument().getLength());
+				try {			
+					while (PDLink) {	
+						String JSWz = "";
+						byte[] JSwzbyte = new byte[1000];
+		                int length = 0;    
+		                
+//						InputStream in = ClientSocket.getInputStream();
+//		                length = in.read(JSwzbyte);//1，接受信息的长度
+//		                JSWz = new String(JSwzbyte, 0, length);
+		                
+		                InputStreamReader isr = new InputStreamReader(ClientSocket.getInputStream());
+		                BufferedReader br = new BufferedReader(isr);
+		                JSWz = br.readLine();
+		                
+		                if(TextArea.getText().trim().equals("")){
+		                	TextArea.append(JSWz); 
+		                }else{
+		                	TextArea.append("\r\n" + JSWz); 
+		                }  
+		                TextArea.setCaretPosition(TextArea.getDocument().getLength());
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

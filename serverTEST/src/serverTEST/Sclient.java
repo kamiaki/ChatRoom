@@ -1,9 +1,13 @@
 package serverTEST;
 
+import java.io.BufferedReader;
 import java.io.EOFException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.List;
@@ -70,11 +74,15 @@ public class Sclient implements Runnable{
 	public void run() {	
 		try {
 			while(Cconnect){
-				byte[] JSwzbyte = new byte[1024];
-                int length = 0;           
-                length = is.read(JSwzbyte);				
-                ReadStr = new String(JSwzbyte,0,length);   		//接受信息             
+//				byte[] JSwzbyte = new byte[1024];
+//				int length = 0;           
+//				length = is.read(JSwzbyte);				
+//				ReadStr = new String(JSwzbyte,0,length);   		//接受信息             
                
+                InputStreamReader isr = new InputStreamReader(s.getInputStream());
+                BufferedReader br = new BufferedReader(isr);
+                ReadStr = br.readLine();
+                
                 String pd = ReadStr.substring(0,3);   
                
                 switch (pd) {									//根据用户发过来的消息判断操作
@@ -126,7 +134,12 @@ public class Sclient implements Runnable{
 	 */
 	public void send(String str){
 		try {
-			os.write(str.getBytes());
+//			os.write(str.getBytes());
+			
+			PrintStream ps = new PrintStream(s.getOutputStream());
+			ps.println(str);
+			ps.flush();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

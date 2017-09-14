@@ -1,6 +1,8 @@
 package serverTEST;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -85,10 +87,15 @@ public class Sserver {
 		
 		try {
 			
-			in = socket.getInputStream();
-			JSwzbyte = new byte[1000];               
-	        length = in.read(JSwzbyte);
-	        readname = new String(JSwzbyte, 0, length);
+//			in = socket.getInputStream();
+//			JSwzbyte = new byte[1000];               
+//	        length = in.read(JSwzbyte);
+//	        readname = new String(JSwzbyte, 0, length);
+	        
+            InputStreamReader isr = new InputStreamReader(socket.getInputStream());
+            BufferedReader br = new BufferedReader(isr);
+            readname = br.readLine();
+            
 	        FHwz = readname.indexOf("#");
 	        readname = readname.substring(FHwz+1);
 	        
