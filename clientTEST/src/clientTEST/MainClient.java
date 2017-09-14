@@ -1,8 +1,10 @@
 package clientTEST;
 
 import java.awt.EventQueue;
+import java.awt.Image;
 
 import javax.swing.JFrame;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JTextField;
@@ -85,7 +87,13 @@ public class MainClient {
 		btl = new buttonlistener();
 		keyl = new keyListener();
 		//*********************************************窗口
-		frame = new JFrame();
+		frame = new JFrame("聊起来！");
+		
+//		ImageIcon ICOa = new ImageIcon("左上角图标.png");   					//窗体图标
+		ImageIcon ICOa = new ImageIcon(getClass().getResource("/左上角图标.png"));   
+		Image Imagea = ICOa.getImage();	
+		frame.setIconImage(Imagea);
+		
 		frame.setBounds(100, 100, 333, 283);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
