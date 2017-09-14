@@ -1,0 +1,93 @@
+		JFrame.setDefaultLookAndFeelDecorated(true);
+		JDialog.setDefaultLookAndFeelDecorated(true);
+SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+		         	SubstanceLookAndFeel.setSkin(new EmeraldDuskSkin());  
+					main window = new main();		         	
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+
+org.pushingpixels.substance.api.skin.AutumnSkin,    
+org.pushingpixels.substance.api.skin.BusinessSkin,    
+org.pushingpixels.substance.api.skin.BusinessBlackSteelSkin,    
+org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin,    
+org.pushingpixels.substance.api.skin.ChallengerDeepSkin,    
+org.pushingpixels.substance.api.skin.CremeSkin,    
+org.pushingpixels.substance.api.skin.CremeCoffeeSkin,    
+org.pushingpixels.substance.api.skin.DustSkin,    
+org.pushingpixels.substance.api.skin.DustCoffeeSkin,    
+org.pushingpixels.substance.api.skin.EmeraldDuskSkin,    
+org.pushingpixels.substance.api.skin.GeminiSkin,    
+org.pushingpixels.substance.api.skin.GraphiteSkin,    
+org.pushingpixels.substance.api.skin.GraphiteAquaSkin,    
+org.pushingpixels.substance.api.skin.GraphiteGlassSkin,    
+org.pushingpixels.substance.api.skin.MagellanSkin,    
+org.pushingpixels.substance.api.skin.MarinerSkin,    
+org.pushingpixels.substance.api.skin.MistAquaSkin,    
+org.pushingpixels.substance.api.skin.MistSilverSkin,    
+org.pushingpixels.substance.api.skin.ModerateSkin,    
+org.pushingpixels.substance.api.skin.NebulaSkin,    
+org.pushingpixels.substance.api.skin.NebulaBrickWallSkin,    
+org.pushingpixels.substance.api.skin.OfficeBlack2007Skin,    
+org.pushingpixels.substance.api.skin.OfficeBlue2007Skin,    
+org.pushingpixels.substance.api.skin.OfficeSilver2007Skin,    
+org.pushingpixels.substance.api.skin.RavenSkin,    
+org.pushingpixels.substance.api.skin.SaharaSkin
+
+
+
+
+
+
+
+
+// ui
+	class GradientPalletProgressBarUI extends BasicProgressBarUI {
+		  public GradientPalletProgressBarUI() {
+		    super();
+		  }
+		  @Override 
+		  public void paintDeterminate(Graphics g, JComponent c) {
+		    if (!(g instanceof Graphics2D)) {
+		      return;
+		    }
+		    Insets b = progressBar.getInsets(); // area for border
+		    int barRectWidth  = progressBar.getWidth()  - (b.right + b.left);
+		    int barRectHeight = progressBar.getHeight() - (b.top + b.bottom);
+		    if (barRectWidth <= 0 || barRectHeight <= 0) {
+		      return;
+		    }
+		    int cellLength = getCellLength();
+		    int cellSpacing = getCellSpacing();
+		    int amountFull = getAmountFull(b, barRectWidth, barRectHeight);
+		    if(progressBar.getOrientation() == JProgressBar.HORIZONTAL) {
+		      float x = amountFull / (float)barRectWidth;
+		      g.setColor(Color.WHITE);
+		      g.fillRect(b.left, b.top, amountFull, barRectHeight);
+		    } else { // VERTICAL	    
+		    }
+		    if(progressBar.isStringPainted()) {
+		      paintString(g, b.left, b.top, barRectWidth, barRectHeight, amountFull, b);
+		    }
+		  }
+	}
+
+		progressBar_READFILE = new JProgressBar();
+		GradientPalletProgressBarUI ui = new GradientPalletProgressBarUI ();
+		progressBar_READFILE.setUI(ui);
+
+
+
+
+
+
+               progressBar.setUI(new MetalProgressBarUI());  BasicProgressBarUI, MetalProgressBarUI 
+               progressBar.setBackground(Color.green);
+               progressBar.setForeground(Color.BLUE);
+  

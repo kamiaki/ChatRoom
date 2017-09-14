@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
+import org.pushingpixels.substance.api.skin.AutumnSkin;
 import org.pushingpixels.substance.api.skin.BusinessBlueSteelSkin;
 
 public class MainClient {
@@ -63,7 +64,7 @@ public class MainClient {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SubstanceLookAndFeel.setSkin(new BusinessBlueSteelSkin());  
+					SubstanceLookAndFeel.setSkin(new AutumnSkin());  
 					MainClient window = new MainClient();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -89,7 +90,7 @@ public class MainClient {
 		//*********************************************窗口
 		frame = new JFrame("聊起来！");
 		
-//		ImageIcon ICOa = new ImageIcon("左上角图标.png");   					//窗体图标
+//		ImageIcon ICOa = new ImageIcon("左上角图标.png");   						//窗体图标
 		ImageIcon ICOa = new ImageIcon(getClass().getResource("/左上角图标.png"));   
 		Image Imagea = ICOa.getImage();	
 		frame.setIconImage(Imagea);
