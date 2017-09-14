@@ -88,10 +88,10 @@ public class MainClient {
 		btl = new buttonlistener();
 		keyl = new keyListener();
 		//*********************************************窗口
-		frame = new JFrame("聊起来！");
+		frame = new JFrame("聊起来！" + "    By:Aki");
 		
-//		ImageIcon ICOa = new ImageIcon("左上角图标.png");   						//窗体图标
-		ImageIcon ICOa = new ImageIcon(getClass().getResource("/左上角图标.png"));   
+//		ImageIcon ICOa = new ImageIcon("ico.png");   						//窗体图标
+		ImageIcon ICOa = new ImageIcon(getClass().getResource("/ico.png"));   
 		Image Imagea = ICOa.getImage();	
 		frame.setIconImage(Imagea);
 		
